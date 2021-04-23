@@ -2,18 +2,8 @@
 #define BPLUSTREESTRING_H
 
 #include "BPlusNnode.h"
-#include <vector>
 using namespace std;
- 
-enum COMPARE_OPERATOR{LT, LE, EQ, BE, BT, BETWEEN}; // 比较操作符：<、<=、=、>=、>、<>
-const int INVALID_INDEX = -1;
- 
-struct SelectResult
-{
-	int keyIndex;
-	CLeafNode* targetNode;
-};
- 
+
 class BPlusTreeString{
 public:
 	BPlusTreeString();
