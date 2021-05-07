@@ -10,7 +10,7 @@ void interNode::remove(int keyIndexFrom, int keyIndexTo){
 	setTotalWeight(getTotalWeight() - deleteWeight);
 
 	// copy the latter keys 
-	int afterToNum = getCurNum() - keyIndexTo - 1;
+	int afterToNum = getCurKeyNum() - keyIndexTo - 1;
 	int limit = min(afterToNum + keyIndexFrom - 1, keyIndexTo);
 	for(int i = keyIndexFrom; i <= limit; ++i){
 		setKeyValue(i, getKeyValue(keyIndexTo + 1));
@@ -45,7 +45,7 @@ void interNode::insert(int targetPosition, BPlusNode* childNode){
 	childnode->setIndexParent(targetPosition); 
 }
 
-// 
+// split the node, creat a new node in the right side
 void interNode::split(){
 	interNode* newNode = new interNode();
 	int leftNum = getCurKeyNum() / 2 + 1;
@@ -72,3 +72,49 @@ void interNode::split(){
 	newNode->setNextNode(getNextNode());
 	setNextNode(newNode);
 }
+
+// merge the right node into the left one
+void interNode::merge(interNode* mergeNode){
+	int plusLen = mergeNode->getCurKeyNum();
+	for (int i = getCurKeyNum(); i < getCurKeyNum() + plusLen; i++){
+		insert(i, mergeNode->getChild(i - getCurKeyNum()));
+	}
+	// update the new left node's pointer
+	setNextNode(mergeNode->getNextNode());
+	// remove the key things in the parent of right node
+	mergeNode->remove(mergeNode->getIndexParent(), mergeNode->getIndexParent());
+	// to release the old right node
+	//
+}
+
+// clear the node and its subtree
+void interNode::clear(){
+	for (int i = 0; i < getCurKeyNum(); ++i){
+		interNode* temp = getChild[i];
+		temp->clear();
+		delete temp;
+	}
+}
+
+// 
+void borrow(){
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
