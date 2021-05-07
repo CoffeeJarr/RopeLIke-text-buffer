@@ -41,6 +41,8 @@ void interNode::insert(int targetPosition, BPlusNode* childNode){
 	setTotalWeight(getTotalWeight() + childNode->getTotalWeight());
 	// update the size of keys
 	setCurKeyNum(getCurKeyNum() + 1);
+	// set the childnode's index 
+	childnode->setIndexParent(targetPosition); 
 }
 
 // 
@@ -50,6 +52,7 @@ void interNode::split(){
 	int rightNum = getCurKeyNum() - leftNum;
 	// update the new right node's size
 	newNode->setCurKeyNum(rightNum);
+
 	// copy the right part to the new node
 	int newTotalWeight = 0;
 	for (int i = 0; i < rightNum; ++i){
@@ -57,16 +60,15 @@ void interNode::split(){
 		newNode->childs[i] = getChild(leftNum + i);
 		newTotalWeight += newNode->keys[i];
 	}
-	// remove the split keys in the old tree
+	// remove the splited keys in the old left node
 	remove(leftNum, getCurKeyNum() - 1);
-
-	// update the total weight of new right node and the old node
+	// update the total weight of new right node
 	newNode->setTotalWeight(newTotalWeight);
-	setTotalWeight(getTotalWeight() - newTotalWeight);
-
 	// set the parent pointer for new right node
-
-
+	interNode* parentNode = getParent();
+	parentNode->insert(getIndexParent() + 1, newNode);
 	// update the preNode and the nextNode pointers
-
+	newNode->setPreNode(this);
+	newNode->setNextNode(getNextNode());
+	setNextNode(newNode);
 }
