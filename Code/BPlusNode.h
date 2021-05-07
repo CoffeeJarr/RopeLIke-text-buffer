@@ -35,10 +35,12 @@ public:
 
 	// virtual function
 	virtual void remove(int keyIndexFrom, int keyIndexTo) = 0;   // remove the specific key
+	virtual void insert(int targetPosition, BPlusNode* childNode) = 0;
 	virtual void split() = 0;
-	virtual void merge() = 0;
+	virtual void merge(interNode* mergeNode) = 0;
 	virtual void clear() = 0;   // remove the whole node and the subtree
 	virtual void borrow() = 0;
+	virtual int search() = 0;
 
 
 protected:
@@ -68,7 +70,7 @@ public:
 	BPlusNode* getChild(int i) const {return childs[i];}
 	
 
-	virtual void remove(int keyIndex) = 0;   // remove the specific key
+	virtual void remove(int keyIndexFrom, int keyIndexTo) = 0;   // remove the specific key
 	virtual void split() = 0;
 	virtual void merge() = 0;
 	virtual void clear() = 0;   // remove the whole node
