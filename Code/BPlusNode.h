@@ -23,7 +23,13 @@ public:
 	int getIndexParent() const {return indexInParent;}
 
 	void setParent(BPlusNode* newParent) {parent = newParent;}
-	void setIndexParent()
+	void setIndexParent(int i) {setIndexParent = i;}
+
+	void setPreNode(BPlusNode* newPre) {preNode = newPre;}
+	void setNextNode(BPlusNode* newNext) {nextNode = newNext;}
+
+	BPlusNode* getPreNode() const {return preNode;}
+	BPlusNode* getNextNode() const {return nextNode;}
 
 	bool fullKeyCheck(){}
 
