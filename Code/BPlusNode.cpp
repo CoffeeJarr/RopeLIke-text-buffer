@@ -41,6 +41,8 @@ void interNode::insert(int targetPosition, BPlusNode* childNode){
 	setTotalWeight(getTotalWeight() + childNode->getTotalWeight());
 	// update the size of keys
 	setCurKeyNum(getCurKeyNum() + 1);
+	// set the childnode's parent
+	childnode->setParent(this);
 	// set the childnode's index 
 	childnode->setIndexParent(targetPosition); 
 }
@@ -96,25 +98,25 @@ void interNode::clear(){
 	}
 }
 
-// 
-void borrow(){
-	
+// borrow from the left brother node or right
+void borrow(interNode* brotherNode, int left, int num){
+	if (left){
+		// this complexcity can be improved....
+		int tempNumBro = brotherNode->getCurKeyNum();
+		// int tempNum = getCurKeyNum();
+		// for (int i = 0; i < num; ++i){
+
+		// }
+		for (int i = 0; i < num; ++i){
+			insert(0, brotherNode->getChild(tempNumBro - 1 - i));
+		}
+		brotherNode->remove(tempNumBro - num, tempNumBro - 1);
+	}
+	else{
+		for (int i = 0; i < num; ++i){
+			insert(getCurKeyNum() + i, brotherNode->getChild(i));
+		}
+		brotherNode->remove(0, num - 1);
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
