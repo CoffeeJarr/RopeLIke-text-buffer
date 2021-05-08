@@ -120,3 +120,16 @@ void borrow(interNode* brotherNode, int left, int num){
 	}
 }
 
+// search each key of the node to find the right key index, k = weight
+int interNode::search(int k){
+	int tempWeight = 0;
+	int targetIndex;
+	for (int i = 0; i < getCurKeyNum(); ++i){
+		tempWeight += getKeyValue(i);
+		if (tempWeight >= k){
+			targetIndex = i;
+			break;
+		}
+	}
+	return targetIndex;
+}
