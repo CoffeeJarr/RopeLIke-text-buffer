@@ -1,5 +1,6 @@
 #include "BPlusNode.h"
 
+// interNode
 // remove the key and the pointer to corresponding children
 void interNode::remove(int keyIndexFrom, int keyIndexTo){
 	// update the total weight of the node
@@ -10,11 +11,11 @@ void interNode::remove(int keyIndexFrom, int keyIndexTo){
 	setTotalWeight(getTotalWeight() - deleteWeight);
 
 	// copy the latter keys 
-	int afterToNum = getCurKeyNum() - keyIndexTo - 1;
-	int limit = min(afterToNum + keyIndexFrom - 1, keyIndexTo);
-	for(int i = keyIndexFrom; i <= limit; ++i){
-		setKeyValue(i, getKeyValue(keyIndexTo + 1));
-		setChild(i, getChild(keyIndexTo + 1));
+	int moveCount = getCurKeyNum() - keyIndexTo - 1;
+	// int limit = keyIndexFrom + moveCount - 1;
+	for(int i = 0; i < moveCount; ++i){
+		setKeyValue(keyIndexFrom + i, getKeyValue(keyIndexTo + 1 + i));
+		setChild(keyIndexFrom + i, getChild(keyIndexTo + 1 + i));
 	}
 	// update the current size of keys 
 	setCurKeyNum(getCurKeyNum() - (keyIndexTo - keyIndexFrom));
@@ -132,4 +133,52 @@ int interNode::search(int k){
 		}
 	}
 	return targetIndex;
+}
+
+// leafNode
+// clear, release the data includes
+void leafNode::clear(){
+	for (int i = 0; i < getCurKeyNum(); ++i){
+		delete datas[i];
+	}
+}
+
+// insert the data(a string) into the leadNode
+void leafNode::insert(int targetPosition, const string& childString){
+	int tempNum = getCurKeyNum();
+	// if the new key should be the end of the keys
+	if (targetPosition == tempNum){
+		setKeyValue(targetPosition, childString.size());
+		setData(targetPosition, childString);
+	}
+	else{
+		// the new key is in the middle or start of the keys
+		for (int i = getCurKeyNum(); i > targetPosition; --i){
+			setKeyValue(i, getKeyValue(i - 1));
+			setData(i, getData(i - 1));
+		}
+		setKeyValue(targetPosition, childString.size());
+		setData(targetPosition, childString);
+	}
+	// update the total weight
+	setTotalWeight(getTotalWeight() + childString.size());
+	// update the size of keys
+	setCurKeyNum(getCurKeyNum() + 1);
+}
+
+// remove the indexing key from the leaf node
+void leafNode::remove(int keyIndexFrom, int keyIndexTo){
+	// update the total weight of the node
+	int deleteWeight = 0;
+	for (int i = keyIndexFrom; i <= keyIndexTo; ++i){
+		deleteWeight += getKeyValue(i);
+	}
+	setTotalWeight(getTotalWeight() - deleteWeight);
+	int moveCount = getCurKeyNum() - keyIndexTo - 1;
+	for(int i = 0; i < moveCount; ++i){
+		setKeyValue(keyIndexFrom + i, getKeyValue(keyIndexTo + 1 + i));
+		setData(keyIndexFrom + i, getData(keyIndexTo + 1 + i));
+	}
+	// update the current size of keys 
+	setCurKeyNum(getCurKeyNum() - (keyIndexTo - keyIndexFrom));
 }

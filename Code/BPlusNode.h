@@ -31,7 +31,7 @@ public:
 	BPlusNode* getPreNode() const {return preNode;}
 	BPlusNode* getNextNode() const {return nextNode;}
 
-	bool fullKeyCheck(){}
+	bool fullKeyCheck(){return curKeyNum == degree;}
 
 	// virtual function
 	virtual void remove(int keyIndexFrom, int keyIndexTo) = 0;   // remove the specific key
@@ -82,11 +82,15 @@ public:
 class leafNode : public BPlusNode
 {
 private:
-	string data[degree]; // leaf node saves the real data: each one line of the text file
+	string datas[degree]; // leaf node saves the real data: each one line of the text file
 
 public:
 	leafNode();
 	virtual ~leafNode();
+
+	void setData(int i, string& data) {datas[i] = data;}
+	string getData(int i) const {return datas[i];}
+
 	virtual void remove(int keyIndex) = 0;   // remove the specific key
 	virtual void split() = 0;
 	virtual void merge() = 0;
