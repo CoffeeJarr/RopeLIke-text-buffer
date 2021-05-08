@@ -33,14 +33,14 @@ public:
 
 	bool fullKeyCheck(){return curKeyNum == degree;}
 
+	int search(int k) const;
 	// virtual function
 	virtual void remove(int keyIndexFrom, int keyIndexTo) = 0;   // remove the specific key
 	virtual void insert(int targetPosition, BPlusNode* childNode) = 0;
 	virtual void split() = 0;
-	virtual void merge(interNode* mergeNode) = 0;
+	virtual void merge(BPlusNode* mergeNode) = 0;
 	virtual void clear() = 0;   // remove the whole node and the subtree
-	virtual void borrow(interNode* brotherNode, int left, int num) = 0;
-	virtual int search(int k) = 0;
+	virtual void borrow(BPlusNode* brotherNode, int left, int num) = 0; 
 
 
 protected:
@@ -69,12 +69,13 @@ public:
 	void setChild(int i, BPlusNode* child) {childs[i] = child;}
 	BPlusNode* getChild(int i) const {return childs[i];}
 	
+	virtual void remove(int keyIndexFrom, int keyIndexTo);   // remove the specific key
+	virtual void insert(int targetPosition, BPlusNode* childNode);
+	virtual void split();
+	virtual void merge(interNode* mergeNode);
+	virtual void clear();   // remove the whole node and the subtree
+	virtual void borrow(interNode* brotherNode, int left, int num); 
 
-	virtual void remove(int keyIndexFrom, int keyIndexTo) = 0;   // remove the specific key
-	virtual void split() = 0;
-	virtual void merge() = 0;
-	virtual void clear() = 0;   // remove the whole node
-	virtual void borrow() = 0;
 	
 };
 
@@ -91,12 +92,16 @@ public:
 	void setData(int i, string& data) {datas[i] = data;}
 	string getData(int i) const {return datas[i];}
 
-	virtual void remove(int keyIndex) = 0;   // remove the specific key
-	virtual void split() = 0;
-	virtual void merge() = 0;
-	virtual void clear() = 0;   // remove the whole node
-	virtual void borrow() = 0;
-	bool fullLineCheck(){} 
+	virtual void remove(int keyIndexFrom, int keyIndexTo);
+	virtual void insert(int targetPosition, string& childString);
+	virtual void split();
+	virtual void merge(leafNode* mergeNode);
+	virtual void clear();
+	virtual void borrow(leafNode* brotherNode, int left, int num);
+	// find the kth string is full or not
+	bool fullStringCheck(int k){
+		return getKeyValue(k) == 1024;
+	}
 	
 };
 

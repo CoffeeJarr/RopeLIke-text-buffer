@@ -100,7 +100,7 @@ void interNode::clear(){
 }
 
 // borrow from the left brother node or right
-void borrow(interNode* brotherNode, int left, int num){
+void interNode::borrow(interNode* brotherNode, int left, int num){
 	if (left){
 		// this complexcity can be improved....
 		int tempNumBro = brotherNode->getCurKeyNum();
@@ -121,20 +121,6 @@ void borrow(interNode* brotherNode, int left, int num){
 	}
 }
 
-// search each key of the node to find the right key index, k = weight
-int interNode::search(int k){
-	int tempWeight = 0;
-	int targetIndex;
-	for (int i = 0; i < getCurKeyNum(); ++i){
-		tempWeight += getKeyValue(i);
-		if (tempWeight >= k){
-			targetIndex = i;
-			break;
-		}
-	}
-	return targetIndex;
-}
-
 // leafNode
 // clear, release the data includes
 void leafNode::clear(){
@@ -143,8 +129,8 @@ void leafNode::clear(){
 	}
 }
 
-// insert the data(a string) into the leadNode
-void leafNode::insert(int targetPosition, const string& childString){
+// insert the data(a string) into the leafNode
+void leafNode::insert(int targetPosition, string& childString){
 	int tempNum = getCurKeyNum();
 	// if the new key should be the end of the keys
 	if (targetPosition == tempNum){
@@ -181,4 +167,76 @@ void leafNode::remove(int keyIndexFrom, int keyIndexTo){
 	}
 	// update the current size of keys 
 	setCurKeyNum(getCurKeyNum() - (keyIndexTo - keyIndexFrom));
+}
+
+// split
+void leafNode::split(){
+	leafNode* newNode = new leafNode();
+	int leftNum = getCurKeyNum() / 2 + 1;
+	int rightNum = getCurKeyNum() - leftNum;
+	// update the new right node's size
+	newNode->setCurKeyNum(rightNum);
+
+	// copy the right part to the new node
+	int newTotalWeight = 0;
+	for (int i = 0; i < rightNum; ++i){
+		newNode->keys[i] = getKeyValue(leftNum + i);
+		newNode->datas[i] = getData(leftNum + i);
+		newTotalWeight += newNode->keys[i];
+	}
+	// remove the splited keys in the old left node
+	remove(leftNum, getCurKeyNum() - 1);
+	// update the total weight of new right node
+	newNode->setTotalWeight(newTotalWeight);
+	// set the parent pointer for new right node
+	interNode* parentNode = getParent();
+	parentNode->insert(getIndexParent() + 1, newNode);
+	// update the preNode and the nextNode pointers
+	newNode->setPreNode(this);
+	newNode->setNextNode(getNextNode());
+	setNextNode(newNode);
+}
+
+// merge
+void leafNode::merge(leafNode* mergeNode){
+	int plusLen = mergeNode->getCurKeyNum();
+	for (int i = getCurKeyNum(); i < getCurKeyNum() + plusLen; i++){
+		insert(i, mergeNode->getData(i - getCurKeyNum()));
+	}
+	// update the new left node's pointer
+	setNextNode(mergeNode->getNextNode());
+	// remove the key things in the parent of right node
+	mergeNode->remove(mergeNode->getIndexParent(), mergeNode->getIndexParent());
+}
+
+// borrow
+void leafNode::borrow(leafNode* brotherNode, int left, int num){
+	if (left){
+		// this complexcity can be improved....
+		int tempNumBro = brotherNode->getCurKeyNum();
+		for (int i = 0; i < num; ++i){
+			insert(0, brotherNode->getData(tempNumBro - 1 - i));
+		}
+		brotherNode->remove(tempNumBro - num, tempNumBro - 1);
+	}
+	else{
+		for (int i = 0; i < num; ++i){
+			insert(getCurKeyNum() + i, brotherNode->getData(i));
+		}
+		brotherNode->remove(0, num - 1);
+	}
+}
+
+// search each key of the node to find the right key index, k = weight
+int BPlusNode::search(int k){
+	int tempWeight = 0;
+	int targetIndex;
+	for (int i = 0; i < getCurKeyNum(); ++i){
+		tempWeight += getKeyValue(i);
+		if (tempWeight >= k){
+			targetIndex = i;
+			break;
+		}
+	}
+	return targetIndex;
 }
