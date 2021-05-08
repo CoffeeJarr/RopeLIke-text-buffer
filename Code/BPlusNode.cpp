@@ -1,5 +1,6 @@
 #include "BPlusNode.h"
-
+#include <memory>
+#include <iostream>
 // interNode
 // remove the key and the pointer to corresponding children
 void interNode::remove(int keyIndexFrom, int keyIndexTo){
