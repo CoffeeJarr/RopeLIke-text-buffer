@@ -40,7 +40,7 @@ public:
 	virtual void merge(interNode* mergeNode) = 0;
 	virtual void clear() = 0;   // remove the whole node and the subtree
 	virtual void borrow(interNode* brotherNode, int left, int num) = 0;
-	virtual int search() = 0;
+	virtual int search(int k) = 0;
 
 
 protected:
@@ -98,5 +98,3 @@ public:
 
 
 #endif
-
-
