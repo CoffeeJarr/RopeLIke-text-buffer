@@ -33,13 +33,10 @@ public:
 	void output() const;
 
 private:
-	int numBytes; // total number of bytes
-	interNode* baseNode;
+	int totalBytes; // total number of bytes
+	interNode* rootNode;
 	leafNode* start;
 	leafNode* finish;
 };
-
-BPlusTreeString::BPlusTreeString(const string& filename) {}
-
 
 #endif
